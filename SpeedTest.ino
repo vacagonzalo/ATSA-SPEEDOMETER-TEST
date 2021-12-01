@@ -168,7 +168,7 @@ void only_coil_b()
   Serial.print("D\n");
   float ms = ((DISTANCE / selected_speed) * 3600) + ((VEHICLE_SIZE / selected_speed) * 3600);
   unsigned long T = round(ms / 10);
-  if (COUNTER >= 5000)
+  if (COUNTER >= T)
   {
     digitalWrite(PIN_COIL_B, LOW);
     STATE = NO_COILS;
