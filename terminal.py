@@ -1,22 +1,28 @@
 from serial import Serial
 from datetime import datetime
 
+# Colocar el puerto serie por favor
+PUERTO_SERIE = '/dev/ttyUSB1'
+
+# Distancia entre espiras (metros)
+DISTANCE = 2.4
+
 
 def main():
-    DISTANCE = 2.4
-    coilA = datetime.now()
-    coilB = datetime.now()
-    with Serial('/dev/ttyUSB1', 9600, timeout=0.02) as s:
+    f = datetime.now().timestamp
+    coilA = f()
+    coilB = f()
+    with Serial(PUERTO_SERIE, 9600, timeout=0.02) as s:
         while(True):
             msg = s.readline()
             if(msg == b'A'):
                 pass
             elif(msg == b'B'):
-                coilA = datetime.now()
+                coilA = f()
             elif(msg == b'C'):
-                coilB = datetime.now()
+                coilB = f()
                 speed = DISTANCE / (coilB - coilA)
-                print(f'@{coilB}: {speed}km/h')
+                print(f'@{datetime.now()}: {speed}km/h')
             elif(msg == b'D'):
                 pass
             else:
