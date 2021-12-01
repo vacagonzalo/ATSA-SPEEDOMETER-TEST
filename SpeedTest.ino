@@ -4,6 +4,7 @@
 #define BAUD_RATE 9600
 #define DISTANCE 2.4   // metros entre espiras
 #define VEHICLE_SIZE 4 // metros, largo del vehiculo
+#define TIME_WITH_NO_VEHICLE 250 * 4
 #define TICK_TIME 10
 
 // Botones selectores de velocidad
@@ -97,6 +98,7 @@ void no_coils()
     digitalWrite(PIN_LED_D, LOW);
     selected_speed = SPEED_A;
   }
+  delay(TIME_WITH_NO_VEHICLE / 4);
   if (digitalRead(PIN_BUTTON_B) == PULSADO)
   {
     while (digitalRead(PIN_BUTTON_B) == PULSADO)
@@ -107,6 +109,7 @@ void no_coils()
     digitalWrite(PIN_LED_D, LOW);
     selected_speed = SPEED_B;
   }
+  delay(TIME_WITH_NO_VEHICLE / 4);
   if (digitalRead(PIN_BUTTON_C) == PULSADO)
   {
     while (digitalRead(PIN_BUTTON_C) == PULSADO)
@@ -117,6 +120,7 @@ void no_coils()
     digitalWrite(PIN_LED_D, LOW);
     selected_speed = SPEED_C;
   }
+  delay(TIME_WITH_NO_VEHICLE / 4);
   if (digitalRead(PIN_BUTTON_D) == PULSADO)
   {
     while (digitalRead(PIN_BUTTON_D) == PULSADO)
@@ -127,6 +131,7 @@ void no_coils()
     digitalWrite(PIN_LED_D, HIGH);
     selected_speed = SPEED_D;
   }
+  delay(TIME_WITH_NO_VEHICLE / 4);
   digitalWrite(PIN_COIL_A, HIGH);
   COUNTER = 0;
   STATE = ONLY_COIL_A;
