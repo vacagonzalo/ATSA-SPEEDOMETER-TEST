@@ -90,8 +90,6 @@ void no_coils()
   // Leo los botones
   if (digitalRead(PIN_BUTTON_A) == PULSADO)
   {
-    while (digitalRead(PIN_BUTTON_A) == PULSADO)
-      ;
     digitalWrite(PIN_LED_A, HIGH);
     digitalWrite(PIN_LED_B, LOW);
     digitalWrite(PIN_LED_C, LOW);
@@ -101,8 +99,6 @@ void no_coils()
   delay(TIME_WITH_NO_VEHICLE / 4);
   if (digitalRead(PIN_BUTTON_B) == PULSADO)
   {
-    while (digitalRead(PIN_BUTTON_B) == PULSADO)
-      ;
     digitalWrite(PIN_LED_A, LOW);
     digitalWrite(PIN_LED_B, HIGH);
     digitalWrite(PIN_LED_C, LOW);
@@ -112,8 +108,6 @@ void no_coils()
   delay(TIME_WITH_NO_VEHICLE / 4);
   if (digitalRead(PIN_BUTTON_C) == PULSADO)
   {
-    while (digitalRead(PIN_BUTTON_C) == PULSADO)
-      ;
     digitalWrite(PIN_LED_A, LOW);
     digitalWrite(PIN_LED_B, LOW);
     digitalWrite(PIN_LED_C, HIGH);
@@ -123,8 +117,6 @@ void no_coils()
   delay(TIME_WITH_NO_VEHICLE / 4);
   if (digitalRead(PIN_BUTTON_D) == PULSADO)
   {
-    while (digitalRead(PIN_BUTTON_D) == PULSADO)
-      ;
     digitalWrite(PIN_LED_A, LOW);
     digitalWrite(PIN_LED_B, LOW);
     digitalWrite(PIN_LED_C, LOW);
