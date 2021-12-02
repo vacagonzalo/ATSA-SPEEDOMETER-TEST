@@ -1,11 +1,16 @@
+//#define DEBUG_MODE // Descomentar para utilizar el puerto serie
+#ifdef DEBUG_MODE
 #include <Wire.h>
+#endif
 
 // Configuracion
-#define BAUD_RATE 9600
+#define BAUD_RATE 115200
 #define DISTANCE 2.4   // metros entre espiras
 #define VEHICLE_SIZE 4 // metros, largo del vehiculo
-#define TIME_WITH_NO_VEHICLE 250 * 4
-#define TICK_TIME 10
+#define TIME_WITH_NO_VEHICLE 250 * 4 // Tiempo sin vehiculo (se leen los pulsadores)
+#define TICK_TIME 20
+
+#define SPEED_CONVERTER 3600
 
 // Botones selectores de velocidad
 #define PULSADO LOW
@@ -47,7 +52,9 @@ void only_coil_b();
 
 void setup()
 {
+  #ifdef DEBUG_MODE
   Serial.begin(BAUD_RATE);
+  #endif
 
   pinMode(PIN_BUTTON_A, INPUT);
   pinMode(PIN_BUTTON_B, INPUT);
@@ -86,7 +93,9 @@ void loop()
 
 void no_coils()
 {
+  #ifdef DEBUG_MODE
   Serial.print("A\n");
+  #endif
   // Leo los botones
   if (digitalRead(PIN_BUTTON_A) == PULSADO)
   {
@@ -131,39 +140,49 @@ void no_coils()
 
 void only_coil_a()
 {
+  #ifdef DEBUG_MODE
   Serial.print("B\n");
-  float ms = (DISTANCE / selected_speed) * 3600;
-  unsigned long T = round(ms / 10);
+  #endif
+  float ms = (DISTANCE / selected_speed) * SPEED_CONVERTER;
+  unsigned long T = round(ms / TICK_TIME);
   if (COUNTER >= T)
   {
     digitalWrite(PIN_COIL_B, HIGH);
     STATE = BOTH_COILS;
+    COUNTER = 0;
+  } else {
+    ++COUNTER;  
   }
-  ++COUNTER;
+  
 }
 
 void both_coils()
 {
+  #ifdef DEBUG_MODE
   Serial.print("C\n");
-  float ms = (VEHICLE_SIZE / selected_speed) * 3600;
-  unsigned long T = round(ms / 10);
+  #endif
+  float ms = (VEHICLE_SIZE / selected_speed) * SPEED_CONVERTER;
+  unsigned long T = round(ms / TICK_TIME);
   if (COUNTER >= T)
   {
     digitalWrite(PIN_COIL_A, LOW);
     STATE = ONLY_COIL_B;
+    COUNTER = 0;
+  } else {
+    ++COUNTER;  
   }
-  ++COUNTER;
 }
 
 void only_coil_b()
 {
+  #ifdef DEBUG_MODE
   Serial.print("D\n");
-  float ms = ((DISTANCE / selected_speed) * 3600) + ((VEHICLE_SIZE / selected_speed) * 3600);
-  unsigned long T = round(ms / 10);
+  #endif
+  float ms = (((DISTANCE / selected_speed)) + ((VEHICLE_SIZE / selected_speed)) * SPEED_CONVERTER);
+  unsigned long T = round(ms / TICK_TIME);
   if (COUNTER >= T)
   {
     digitalWrite(PIN_COIL_B, LOW);
     STATE = NO_COILS;
   }
-  COUNTER = 0;
 }
