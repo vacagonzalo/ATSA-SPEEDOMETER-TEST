@@ -8,21 +8,21 @@
 #define TICK_TIME 10
 
 // Botones selectores de velocidad
-#define PULSADO HIGH
-#define PIN_BUTTON_A 1
-#define PIN_BUTTON_B 2
-#define PIN_BUTTON_C 3
-#define PIN_BUTTON_D 4
+#define PULSADO LOW
+#define PIN_BUTTON_A 22
+#define PIN_BUTTON_B 24
+#define PIN_BUTTON_C 26
+#define PIN_BUTTON_D 28
 
 // Salidas de espiras
-#define PIN_COIL_A 5
-#define PIN_COIL_B 6
+#define PIN_COIL_A 31
+#define PIN_COIL_B 33
 
 // Salidas de leds
-#define PIN_LED_A 7
-#define PIN_LED_B 8
-#define PIN_LED_C 9
-#define PIN_LED_D 10
+#define PIN_LED_A 32
+#define PIN_LED_B 34
+#define PIN_LED_C 36
+#define PIN_LED_D 38
 
 // Velocidades en km/4
 #define SPEED_A 40
