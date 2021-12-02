@@ -10,7 +10,7 @@
 #define TIME_WITH_NO_VEHICLE 250 * 4 // Tiempo sin vehiculo (se leen los pulsadores)
 #define TICK_TIME 20
 
-#define SPEED_CONVERTER 3600
+#define SPEED_CONVERTER 36000 / 2
 
 // Botones selectores de velocidad
 #define PULSADO LOW
@@ -178,7 +178,7 @@ void only_coil_b()
   #ifdef DEBUG_MODE
   Serial.print("D\n");
   #endif
-  float ms = (((DISTANCE / selected_speed)) + ((VEHICLE_SIZE / selected_speed)) * SPEED_CONVERTER);
+  float ms = (((VEHICLE_SIZE - DISTANCE) / selected_speed) * SPEED_CONVERTER);
   unsigned long T = round(ms / TICK_TIME);
   if (COUNTER >= T)
   {
