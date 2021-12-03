@@ -24,10 +24,10 @@
 
 typedef enum
 {
-  speed40,
-  speed60,
-  speed80,
-  speed100,
+  speedA,
+  speedB,
+  speedC,
+  speedD,
   speedNone
 } speed_t;
 
@@ -35,10 +35,10 @@ speed_t selector = speedNone;
 
 // Tiempos en milisegundos
 const unsigned long CRONOS[4][4] = {
-    {1000, 247, 132, 247},
-    {1000, 173, 94, 173},
-    {1000, 144, 78, 144},
-    {1000, 123, 67, 123},
+    {1000, 288, 96, 288}, // 60km/h
+    {1000, 173, 58, 173}, // 100km/h
+    {1000, 144, 48, 144}, // 120km/h
+    {1000, 123, 41, 123}, // 140km/h
 };
 
 void setup()
@@ -61,7 +61,7 @@ void loop()
 {
   if (PULSADO == digitalRead(PIN_BUTTON_A))
   {
-    selector = speed40;
+    selector = speedA;
     digitalWrite(PIN_LED_A, HIGH);
     digitalWrite(PIN_LED_B, LOW);
     digitalWrite(PIN_LED_C, LOW);
@@ -69,7 +69,7 @@ void loop()
   }
   else if (PULSADO == digitalRead(PIN_BUTTON_B))
   {
-    selector = speed60;
+    selector = speedB;
     digitalWrite(PIN_LED_A, LOW);
     digitalWrite(PIN_LED_B, HIGH);
     digitalWrite(PIN_LED_C, LOW);
@@ -77,7 +77,7 @@ void loop()
   }
   else if (PULSADO == digitalRead(PIN_BUTTON_C))
   {
-    selector = speed80;
+    selector = speedC;
     digitalWrite(PIN_LED_A, LOW);
     digitalWrite(PIN_LED_B, LOW);
     digitalWrite(PIN_LED_C, HIGH);
@@ -85,7 +85,7 @@ void loop()
   }
   else if (PULSADO == digitalRead(PIN_BUTTON_D))
   {
-    selector = speed100;
+    selector = speedD;
     digitalWrite(PIN_LED_A, LOW);
     digitalWrite(PIN_LED_B, LOW);
     digitalWrite(PIN_LED_C, LOW);
