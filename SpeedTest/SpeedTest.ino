@@ -16,6 +16,10 @@
 #define PIN_LED_B 34
 #define PIN_LED_C 36
 #define PIN_LED_D 38
+
+// Estado de salidas de coils
+#define ENCENDIDO LOW
+#define APAGADO HIGH
 ///////////////////////////////////////////////////////////////////////////////
 
 typedef enum
@@ -31,10 +35,10 @@ speed_t selector = speedNone;
 
 // Tiempos en milisegundos
 const unsigned long CRONOS[4][4] = {
-    {1000, 216, 144, 216},
-    {1000, 144, 96, 144},
-    {1000, 108, 72, 108},
-    {1000, 86, 58, 86},
+    {1000, 444, 156, 288},
+    {1000, 333, 117, 216},
+    {1000, 266, 94, 173},
+    {1000, 205, 72, 133},
 };
 
 void setup()
@@ -96,8 +100,8 @@ void loop()
     digitalWrite(PIN_LED_D, LOW);
   }
 
-  digitalWrite(PIN_COIL_A, LOW);
-  digitalWrite(PIN_COIL_B, LOW);
+  digitalWrite(PIN_COIL_A, APAGADO);
+  digitalWrite(PIN_COIL_B, APAGADO);
 
   // Si no hay velocidad seleccionada no ejecuto secuencia
   if (selector != speedNone)
@@ -107,18 +111,18 @@ void loop()
     delay(CRONOS[selector][0]);
 
     // 10
-    digitalWrite(PIN_COIL_A, HIGH);
-    digitalWrite(PIN_COIL_B, LOW);
+    digitalWrite(PIN_COIL_A, ENCENDIDO);
+    digitalWrite(PIN_COIL_B, APAGADO);
     delay(CRONOS[selector][1]);
 
     // 11
-    digitalWrite(PIN_COIL_A, HIGH);
-    digitalWrite(PIN_COIL_B, HIGH);
+    digitalWrite(PIN_COIL_A, ENCENDIDO);
+    digitalWrite(PIN_COIL_B, ENCENDIDO);
     delay(CRONOS[selector][2]);
 
     // 01
-    digitalWrite(PIN_COIL_A, LOW);
-    digitalWrite(PIN_COIL_B, HIGH);
+    digitalWrite(PIN_COIL_A, APAGADO);
+    digitalWrite(PIN_COIL_B, ENCENDIDO);
     delay(CRONOS[selector][3]);
   }
 }
