@@ -27,6 +27,8 @@ typedef enum
   speedNone
 } speed_t;
 
+speed_t selector = speedNone;
+
 // Tiempos en milisegundos
 const unsigned long CRONOS[4][4] = {
     {1000, 216, 144, 216},
@@ -98,28 +100,25 @@ void loop()
   digitalWrite(PIN_COIL_B, LOW);
 
   // Si no hay velocidad seleccionada no ejecuto secuencia
-  if (selector == speedNone)
-  {
-    delay(20);
-    continue;
+  if (selector != speedNone)
+  { 
+    // Secuencia de pulsos:
+    // 00
+    delay(CRONOS[selector][0]);
+
+    // 10
+    digitalWrite(PIN_COIL_A, HIGH);
+    digitalWrite(PIN_COIL_B, LOW);
+    delay(CRONOS[selector][1]);
+
+    // 11
+    digitalWrite(PIN_COIL_A, HIGH);
+    digitalWrite(PIN_COIL_B, HIGH);
+    delay(CRONOS[selector][2]);
+
+    // 01
+    digitalWrite(PIN_COIL_A, LOW);
+    digitalWrite(PIN_COIL_B, HIGH);
+    delay(CRONOS[selector][3]);
   }
-
-  // Secuencia de pulsos:
-  // 00
-  delay(CRONOS[selector][0]);
-
-  // 10
-  digitalWrite(PIN_COIL_A, HIGH);
-  digitalWrite(PIN_COIL_B, LOW);
-  delay(CRONOS[selector][1]);
-
-  // 11
-  digitalWrite(PIN_COIL_A, HIGH);
-  digitalWrite(PIN_COIL_B, HIGH);
-  delay(CRONOS[selector][2]);
-
-  // 01
-  digitalWrite(PIN_COIL_A, LOW);
-  digitalWrite(PIN_COIL_B, HIGH);
-  delay(CRONOS[selector][3]);
 }
