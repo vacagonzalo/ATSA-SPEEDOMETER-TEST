@@ -1,16 +1,4 @@
-//#define DEBUG_MODE // Descomentar para utilizar el puerto serie
-#ifdef DEBUG_MODE
-#include <Wire.h>
-#endif
-
-// Configuracion
-#define BAUD_RATE 115200
-#define DISTANCE 2.4   // metros entre espiras
-#define VEHICLE_SIZE 4 // metros, largo del vehiculo
-#define TIME_WITH_NO_VEHICLE 250 * 4 // Tiempo sin vehiculo (se leen los pulsadores)
-#define TICK_TIME 20
-
-#define SPEED_CONVERTER 36000 / 2
+// CONFIGURACION ///////////////////////////////////////////////////////////////
 
 // Botones selectores de velocidad
 #define PULSADO LOW
@@ -28,34 +16,27 @@
 #define PIN_LED_B 34
 #define PIN_LED_C 36
 #define PIN_LED_D 38
+///////////////////////////////////////////////////////////////////////////////
 
-// Velocidades en km/4
-#define SPEED_A 40
-#define SPEED_B 60
-#define SPEED_C 80
-#define SPEED_D 100
+typedef enum
+{
+  speed40,
+  speed60,
+  speed80,
+  speed100,
+  speedNone
+} speed_t;
 
-// Maquina de estados
-#define NO_COILS 0
-#define ONLY_COIL_A 1
-#define BOTH_COILS 2
-#define ONLY_COIL_B 3
-int STATE = NO_COILS;
-
-unsigned long COUNTER = 0;
-float selected_speed = SPEED_A;
-
-void no_coils();
-void only_coil_a();
-void both_coils();
-void only_coil_b();
+// Tiempos en milisegundos
+const unsigned long CRONOS[4][4] = {
+    {1000, 216, 144, 216},
+    {1000, 144, 96, 144},
+    {1000, 108, 72, 108},
+    {1000, 86, 58, 86},
+};
 
 void setup()
 {
-  #ifdef DEBUG_MODE
-  Serial.begin(BAUD_RATE);
-  #endif
-
   pinMode(PIN_BUTTON_A, INPUT);
   pinMode(PIN_BUTTON_B, INPUT);
   pinMode(PIN_BUTTON_C, INPUT);
@@ -72,117 +53,73 @@ void setup()
 
 void loop()
 {
-  switch (STATE)
+  if (PULSADO == digitalRead(PIN_BUTTON_A))
   {
-  case NO_COILS:
-    no_coils();
-    break;
-  case ONLY_COIL_A:
-    only_coil_a();
-    break;
-  case BOTH_COILS:
-    both_coils();
-    break;
-  case ONLY_COIL_B:
-    only_coil_b();
-    break;
-  }
-  ++COUNTER;
-  delay(TICK_TIME); // Patron de tiempo
-}
-
-void no_coils()
-{
-  #ifdef DEBUG_MODE
-  Serial.print("A\n");
-  #endif
-  // Leo los botones
-  if (digitalRead(PIN_BUTTON_A) == PULSADO)
-  {
+    selector = speed40;
     digitalWrite(PIN_LED_A, HIGH);
     digitalWrite(PIN_LED_B, LOW);
     digitalWrite(PIN_LED_C, LOW);
     digitalWrite(PIN_LED_D, LOW);
-    selected_speed = SPEED_A;
   }
-  delay(TIME_WITH_NO_VEHICLE / 4);
-  if (digitalRead(PIN_BUTTON_B) == PULSADO)
+  else if (PULSADO == digitalRead(PIN_BUTTON_B))
   {
+    selector = speed60;
     digitalWrite(PIN_LED_A, LOW);
     digitalWrite(PIN_LED_B, HIGH);
     digitalWrite(PIN_LED_C, LOW);
     digitalWrite(PIN_LED_D, LOW);
-    selected_speed = SPEED_B;
   }
-  delay(TIME_WITH_NO_VEHICLE / 4);
-  if (digitalRead(PIN_BUTTON_C) == PULSADO)
+  else if (PULSADO == digitalRead(PIN_BUTTON_C))
   {
+    selector = speed80;
     digitalWrite(PIN_LED_A, LOW);
     digitalWrite(PIN_LED_B, LOW);
     digitalWrite(PIN_LED_C, HIGH);
     digitalWrite(PIN_LED_D, LOW);
-    selected_speed = SPEED_C;
   }
-  delay(TIME_WITH_NO_VEHICLE / 4);
-  if (digitalRead(PIN_BUTTON_D) == PULSADO)
+  else if (PULSADO == digitalRead(PIN_BUTTON_D))
   {
+    selector = speed100;
     digitalWrite(PIN_LED_A, LOW);
     digitalWrite(PIN_LED_B, LOW);
     digitalWrite(PIN_LED_C, LOW);
     digitalWrite(PIN_LED_D, HIGH);
-    selected_speed = SPEED_D;
   }
-  delay(TIME_WITH_NO_VEHICLE / 4);
+  else
+  {
+    selector = speedNone;
+    digitalWrite(PIN_LED_A, LOW);
+    digitalWrite(PIN_LED_B, LOW);
+    digitalWrite(PIN_LED_C, LOW);
+    digitalWrite(PIN_LED_D, LOW);
+  }
+
+  digitalWrite(PIN_COIL_A, LOW);
+  digitalWrite(PIN_COIL_B, LOW);
+
+  // Si no hay velocidad seleccionada no ejecuto secuencia
+  if (selector == speedNone)
+  {
+    delay(20);
+    continue;
+  }
+
+  // Secuencia de pulsos:
+  // 00
+  delay(CRONOS[selector][0]);
+
+  // 10
   digitalWrite(PIN_COIL_A, HIGH);
-  COUNTER = 0;
-  STATE = ONLY_COIL_A;
-}
+  digitalWrite(PIN_COIL_B, LOW);
+  delay(CRONOS[selector][1]);
 
-void only_coil_a()
-{
-  #ifdef DEBUG_MODE
-  Serial.print("B\n");
-  #endif
-  float ms = (DISTANCE / selected_speed) * SPEED_CONVERTER;
-  unsigned long T = round(ms / TICK_TIME);
-  if (COUNTER >= T)
-  {
-    digitalWrite(PIN_COIL_B, HIGH);
-    STATE = BOTH_COILS;
-    COUNTER = 0;
-  } else {
-    ++COUNTER;  
-  }
-  
-}
+  // 11
+  digitalWrite(PIN_COIL_A, HIGH);
+  digitalWrite(PIN_COIL_B, HIGH);
+  delay(CRONOS[selector][2]);
 
-void both_coils()
-{
-  #ifdef DEBUG_MODE
-  Serial.print("C\n");
-  #endif
-  float ms = (VEHICLE_SIZE / selected_speed) * SPEED_CONVERTER;
-  unsigned long T = round(ms / TICK_TIME);
-  if (COUNTER >= T)
-  {
-    digitalWrite(PIN_COIL_A, LOW);
-    STATE = ONLY_COIL_B;
-    COUNTER = 0;
-  } else {
-    ++COUNTER;  
-  }
-}
-
-void only_coil_b()
-{
-  #ifdef DEBUG_MODE
-  Serial.print("D\n");
-  #endif
-  float ms = (((VEHICLE_SIZE - DISTANCE) / selected_speed) * SPEED_CONVERTER);
-  unsigned long T = round(ms / TICK_TIME);
-  if (COUNTER >= T)
-  {
-    digitalWrite(PIN_COIL_B, LOW);
-    STATE = NO_COILS;
-  }
+  // 01
+  digitalWrite(PIN_COIL_A, LOW);
+  digitalWrite(PIN_COIL_B, HIGH);
+  delay(CRONOS[selector][3]);
 }
