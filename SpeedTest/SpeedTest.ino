@@ -35,10 +35,10 @@ speed_t selector = speedNone;
 
 // Tiempos en milisegundos
 const unsigned long CRONOS[4][4] = {
-    {1000, 444, 156, 288},
-    {1000, 333, 117, 216},
-    {1000, 266, 94, 173},
-    {1000, 205, 72, 133},
+    {1000, 247, 132, 247},
+    {1000, 173, 94, 173},
+    {1000, 144, 78, 144},
+    {1000, 123, 67, 123},
 };
 
 void setup()
@@ -105,7 +105,7 @@ void loop()
 
   // Si no hay velocidad seleccionada no ejecuto secuencia
   if (selector != speedNone)
-  { 
+  {
     // Secuencia de pulsos:
     // 00
     delay(CRONOS[selector][0]);
