@@ -1,4 +1,5 @@
 // CONFIGURACION ///////////////////////////////////////////////////////////////
+#define TIEMPO_ENTRE_AUTOS 3000
 
 // Botones selectores de velocidad
 #define PULSADO LOW
@@ -35,11 +36,13 @@ speed_t selector = speedNone;
 
 // Tiempos en milisegundos
 const unsigned long CRONOS[4][4] = {
-    {1000, 288, 96, 288}, // 60km/h
-    {1000, 173, 58, 173}, // 100km/h
-    {1000, 144, 48, 144}, // 120km/h
-    {1000, 123, 41, 123}, // 140km/h
+    {TIEMPO_ENTRE_AUTOS, 288, 96, 288}, // 60km/h
+    {TIEMPO_ENTRE_AUTOS, 173, 58, 173}, // 100km/h
+    {TIEMPO_ENTRE_AUTOS, 144, 48, 144}, // 120km/h
+    {TIEMPO_ENTRE_AUTOS, 123, 41, 123}, // 140km/h
 };
+
+speed_t nextSelector(speed_t sp);
 
 void setup()
 {
@@ -85,7 +88,7 @@ void loop()
   }
   else if (PULSADO == digitalRead(PIN_BUTTON_D))
   {
-    selector = speedD;
+    selector = nextSelector(selector);
     digitalWrite(PIN_LED_A, LOW);
     digitalWrite(PIN_LED_B, LOW);
     digitalWrite(PIN_LED_C, LOW);
@@ -125,4 +128,14 @@ void loop()
     digitalWrite(PIN_COIL_B, ENCENDIDO);
     delay(CRONOS[selector][3]);
   }
+}
+
+speed_t nextSelector(speed_t sp)
+{
+    int aux = (int)sp + 1;
+    if(aux >= speedNone)
+    {
+        aux = speedA;
+    }
+    return (speed_t)aux;
 }
